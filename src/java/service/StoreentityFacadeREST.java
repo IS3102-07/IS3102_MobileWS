@@ -81,7 +81,7 @@ public class StoreentityFacadeREST extends AbstractFacade<Storeentity> {
     @Path("stores")
     @Produces({"application/json"})
     public List<Storeentity> listAllStores() {
-        Query q = em.createQuery("Select s from Storeentity s where s.isdeleted=FALSE");
+        Query q = em.createQuery("Select s from Storeentity s where s.isdeleted=FALSE and s.countryId.name='Singapore'");
         List<Storeentity> list = q.getResultList();
         for (Storeentity s : list) {
             em.detach(s);

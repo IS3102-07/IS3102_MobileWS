@@ -6,10 +6,12 @@
 package service;
 
 import Entity.Countryentity;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -26,6 +28,7 @@ import javax.ws.rs.Produces;
 @Stateless
 @Path("entity.countryentity")
 public class CountryentityFacadeREST extends AbstractFacade<Countryentity> {
+
     @PersistenceContext(unitName = "WebService_MobilePU")
     private EntityManager em;
 
@@ -81,9 +84,27 @@ public class CountryentityFacadeREST extends AbstractFacade<Countryentity> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("country")
+    @Produces({"application/json"})
+    public List<Countryentity> listAllCountries() {
+        Query q = em.createQuery("Select c from Countryentity c");
+        List<Countryentity> list = q.getResultList();
+        List<Countryentity> countryList = new ArrayList();
+        for (Countryentity country : list) {
+            em.detach(country);
+            country.setItemCountryentityList(null);
+            country.setMemberentityList(null);
+            country.setStoreentityList(null);
+            country.setWarehouseentityList(null);
+            countryList.add(country);
+        }
+        return countryList;
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

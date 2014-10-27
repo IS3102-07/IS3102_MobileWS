@@ -5,6 +5,9 @@
  */
 package service;
 
+import Entity.FurnitureHelper;
+import Entity.Furnitureentity;
+import Entity.ItemCountryentity;
 import Entity.Itementity;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 /**
  *
@@ -28,6 +32,7 @@ import javax.ws.rs.Produces;
 @Stateless
 @Path("entity.itementity")
 public class ItementityFacadeREST extends AbstractFacade<Itementity> {
+
     @PersistenceContext(unitName = "WebService_MobilePU")
     private EntityManager em;
 
@@ -82,31 +87,59 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
     public String countREST() {
         return String.valueOf(super.count());
     }
-    
+
     @GET
     @Path("items")
     @Produces({"application/json"})
-    public List<Itementity> listAllItems() {
-        Query q = em.createQuery("Select s from Itementity s where s.isdeleted=FALSE");
-        List<Itementity> list = q.getResultList();
-        for (Itementity i : list) {
-            em.detach(i);
-            i.setFurnitureentity(null);
-            i.setItemCountryentityList(null);
-            i.setLineitementityList(null);
-            i.setRetailproductentity(null);
-            i.setShoppinglistentityList(null);
-            i.setWarehousesId(null);
-            i.setWishlistentityList(null);
+    public List<Itementity> listAllItemsByCountry(@QueryParam("country") String country) {
+        Query q = em.createQuery("Select c from ItemCountryentity c,Countryentity co where c.countryId.id=co.id and c.countryId.name=:country and c.isdeleted=false");
+        q.setParameter("country", country);
+        List<ItemCountryentity> list = q.getResultList();
+        List<Itementity> itemList = new ArrayList();
+        for (ItemCountryentity itemCountry : list) {
+            Itementity item = itemCountry.getItemId();
+            if (!item.getIsdeleted()) {
+                em.detach(item);
+                item.setFurnitureentity(null);
+                item.setItemCountryentityList(null);
+                item.setLineitementityList(null);
+                item.setRetailproductentity(null);
+                item.setShoppinglistentityList(null);
+                item.setWarehousesId(null);
+                item.setWishlistentityList(null);
+                itemList.add(item);
+            }
         }
-        List<Itementity> list2 = new ArrayList();
-        list2.add(list.get(0));
-        return list;
+        return itemList;
+    }
+
+    @GET
+    @Path("furniture")
+    @Produces({"application/json"})
+    public List<FurnitureHelper> listAllFurnitureByCountry(@QueryParam("country") String country) {
+        Query q = em.createQuery("Select c from ItemCountryentity c,Countryentity co where c.countryId.id=co.id and c.countryId.name=:country and c.isdeleted=false");
+        q.setParameter("country", country);
+        List<ItemCountryentity> list = q.getResultList();
+        List<FurnitureHelper> furnitureList = new ArrayList();
+        for (ItemCountryentity itemCountry : list) {
+            Itementity item = itemCountry.getItemId();
+            if (!item.getIsdeleted() && item.getType().equals("Furniture")) {
+                FurnitureHelper furnitureHelper = new FurnitureHelper();
+                furnitureHelper.setId(item.getId());
+                furnitureHelper.setName(item.getName());
+                furnitureHelper.setDescription(item.getDescription());
+                furnitureHelper.setImageUrl(item.getFurnitureentity().getImageurl());
+                furnitureHelper.setSKU(item.getSku());
+                furnitureHelper.setType(item.getType());
+                furnitureList.add(furnitureHelper);
+            }
+        }
+        return furnitureList;
     }
 
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
