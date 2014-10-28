@@ -32,34 +32,34 @@ import javax.ws.rs.QueryParam;
 @Stateless
 @Path("entity.itementity")
 public class ItementityFacadeREST extends AbstractFacade<Itementity> {
-
+    
     @PersistenceContext(unitName = "WebService_MobilePU")
     private EntityManager em;
-
+    
     public ItementityFacadeREST() {
         super(Itementity.class);
     }
-
+    
     @POST
     @Override
     @Consumes({"application/xml", "application/json"})
     public void create(Itementity entity) {
         super.create(entity);
     }
-
+    
     @PUT
     @Path("{id}")
     @Consumes({"application/xml", "application/json"})
     public void edit(@PathParam("id") Long id, Itementity entity) {
         super.edit(entity);
     }
-
+    
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
         super.remove(super.find(id));
     }
-
+    
     @GET
     @Path("{id}")
     @Produces({"application/xml", "application/json"})
@@ -67,27 +67,26 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
         return super.find(id);
     }
 
-    @GET
-    @Override
-    @Produces({"application/xml", "application/json"})
-    public List<Itementity> findAll() {
-        return super.findAll();
-    }
-
-    @GET
-    @Path("{from}/{to}")
-    @Produces({"application/xml", "application/json"})
-    public List<Itementity> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces("text/plain")
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-
+//    @GET
+//    @Override
+//    @Produces({"application/xml", "application/json"})
+//    public List<Itementity> findAll() {
+//        return super.findAll();
+//    }
+//
+//    @GET
+//    @Path("{from}/{to}")
+//    @Produces({"application/xml", "application/json"})
+//    public List<Itementity> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+//        return super.findRange(new int[]{from, to});
+//    }
+//
+//    @GET
+//    @Path("count")
+//    @Produces("text/plain")
+//    public String countREST() {
+//        return String.valueOf(super.count());
+//    }
     @GET
     @Path("items")
     @Produces({"application/json"})
@@ -112,7 +111,7 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
         }
         return itemList;
     }
-
+    
     @GET
     @Path("furniture")
     @Produces({"application/json"})
@@ -131,15 +130,38 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
                 furnitureHelper.setImageUrl(item.getFurnitureentity().getImageurl());
                 furnitureHelper.setSKU(item.getSku());
                 furnitureHelper.setType(item.getType());
+                furnitureHelper.setLength(item.getLength());
+                furnitureHelper.setWidth(item.getWidth());
+                furnitureHelper.setHeight(item.getHeight());
                 furnitureList.add(furnitureHelper);
             }
         }
         return furnitureList;
     }
-
+    
+//    @GET
+//    @Path("itemInfo")
+//    @Produces({"application/json"})
+//    public FurnitureHelper getItemInfo(@QueryParam("country") Long itemId) {
+//        Query q = em.createQuery("Select i from Itementity i where i.id=:itemId and i.isdeleted=false");
+//        List<Itementity> item = q.getSingleResult();
+//        List<FurnitureHelper> furnitureList = new ArrayList();
+//        
+//        FurnitureHelper furnitureHelper = new FurnitureHelper();
+//        furnitureHelper.setId(item.getId());
+//        furnitureHelper.setName(item.getName());
+//        furnitureHelper.setDescription(item.getDescription());
+//        furnitureHelper.setImageUrl(item.getFurnitureentity().getImageurl());
+//        furnitureHelper.setSKU(item.getSku());
+//        furnitureHelper.setType(item.getType());
+//        furnitureList.add(furnitureHelper);
+//        
+//        return furnitureList;
+//    }
+//    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
 }

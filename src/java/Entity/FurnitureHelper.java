@@ -8,6 +8,9 @@ public class FurnitureHelper {
     private String SKU;
     private String description;
     private String type;
+    private Integer length;
+    private Integer width;
+    private Integer height;
 
     public Long getId() {
         return id;
@@ -55,6 +58,30 @@ public class FurnitureHelper {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
     
 }

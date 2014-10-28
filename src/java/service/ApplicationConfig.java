@@ -35,6 +35,7 @@ public class ApplicationConfig extends Application {
         resources.add(service.LineitementityFacadeREST.class);
         resources.add(service.LoyaltytierentityFacadeREST.class);
         resources.add(service.MemberentityFacadeREST.class);
+        resources.add(service.QrphonesyncentityFacadeREST.class);
         resources.add(service.RetailproductentityFacadeREST.class);
         resources.add(service.ShoppinglistentityFacadeREST.class);
         resources.add(service.StoreentityFacadeREST.class);
