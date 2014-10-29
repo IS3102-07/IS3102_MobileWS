@@ -31,6 +31,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Shoppinglistentity.findAll", query = "SELECT s FROM Shoppinglistentity s"),
     @NamedQuery(name = "Shoppinglistentity.findById", query = "SELECT s FROM Shoppinglistentity s WHERE s.id = :id")})
 public class Shoppinglistentity implements Serializable {
+    @ManyToMany(mappedBy = "shoppinglistentityList")
+    private List<Lineitementity> lineitementityList;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -98,6 +100,15 @@ public class Shoppinglistentity implements Serializable {
     @Override
     public String toString() {
         return "Entity.Shoppinglistentity[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<Lineitementity> getLineitementityList() {
+        return lineitementityList;
+    }
+
+    public void setLineitementityList(List<Lineitementity> lineitementityList) {
+        this.lineitementityList = lineitementityList;
     }
     
 }

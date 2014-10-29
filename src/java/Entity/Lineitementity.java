@@ -6,11 +6,14 @@
 package Entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -18,6 +21,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -32,6 +36,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Lineitementity.findByPacktype", query = "SELECT l FROM Lineitementity l WHERE l.packtype = :packtype"),
     @NamedQuery(name = "Lineitementity.findByQuantity", query = "SELECT l FROM Lineitementity l WHERE l.quantity = :quantity")})
 public class Lineitementity implements Serializable {
+    @JoinTable(name = "shoppinglistentity_lineitementity", joinColumns = {
+        @JoinColumn(name = "items_ID", referencedColumnName = "ID")}, inverseJoinColumns = {
+        @JoinColumn(name = "ShoppingListEntity_ID", referencedColumnName = "ID")})
+    @ManyToMany
+    private List<Shoppinglistentity> shoppinglistentityList;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -109,6 +118,15 @@ public class Lineitementity implements Serializable {
     @Override
     public String toString() {
         return "Entity.Lineitementity[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<Shoppinglistentity> getShoppinglistentityList() {
+        return shoppinglistentityList;
+    }
+
+    public void setShoppinglistentityList(List<Shoppinglistentity> shoppinglistentityList) {
+        this.shoppinglistentityList = shoppinglistentityList;
     }
     
 }
