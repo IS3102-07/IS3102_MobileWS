@@ -112,6 +112,17 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
         return itemList;
     }
     
+        @GET
+    @Path("itemname")
+    @Produces({"application/json"})
+    public String getItemNameBySKU(@QueryParam("SKU") String SKU) {
+        Query q = em.createQuery("Select i from Itementity i where i.sku=:SKU and i.isdeleted=false");
+        q.setParameter("SKU", SKU);
+        Itementity item = (Itementity)q.getSingleResult();
+        
+        return item.getName();
+    }
+    
     @GET
     @Path("furniture")
     @Produces({"application/json"})

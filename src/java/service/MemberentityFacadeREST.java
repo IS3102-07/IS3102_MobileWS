@@ -6,6 +6,8 @@
 package service;
 
 import Entity.Itementity;
+import Entity.Loyaltytierentity;
+import Entity.MemberHelper;
 import Entity.Memberentity;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -76,7 +78,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
         List<Memberentity> list2 = new ArrayList();
         list2.add(list.get(0));
         return list;
-    } 
+    }
 
     @GET
     @Path("login")
@@ -134,32 +136,35 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
         return passwordHash;
     }
 
-//    @GET
-//    @Path("{id}")
-//    @Produces({"application/xml", "application/json"})
-//    public Memberentity find(@PathParam("id") Long id) {
-//        return super.find(id);
-//    }
-
     @GET
-    @Override
-    @Produces({"application/xml", "application/json"})
-    public List<Memberentity> findAll() {
-        return super.findAll();
-    }
+    @Path("account")
+    @Produces("application/json")
+    public MemberHelper getMemberAccount(@QueryParam("email") String email) {
+        System.out.println("getMemberAccount is called");
+        try {
+            Query q = em.createQuery("SELECT m FROM Memberentity m where m.email=:email and m.isdeleted=FALSE");
+            q.setParameter("email", email);
+            Memberentity m = (Memberentity) q.getSingleResult();
+            Loyaltytierentity loyalty = m.getLoyaltytierId();
+            List<Itementity> wishList = m.getWishlistId().getItementityList();
+            ArrayList<String> arrWishList = new ArrayList<>();
+            for (Itementity i : wishList) {
+                arrWishList.add(i.getSku() + ": " + i.getName());
+            }
+            MemberHelper helper = new MemberHelper();
+            helper.setEmail(email);
+            helper.setName(m.getName());
+            helper.setTier(loyalty.getTier());
+            helper.setPointsEarned(m.getLoyaltypoints());
+            helper.setAmountSpent(m.getCummulativespending());
+            helper.setWishList(arrWishList);
+            System.out.println("Login credentials provided were incorrect, password wrong.");
+            return helper;
 
-    @GET
-    @Path("{from}/{to}")
-    @Produces({"application/xml", "application/json"})
-    public List<Memberentity> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces("text/plain")
-    public String countREST() {
-        return String.valueOf(super.count());
+        } catch (Exception ex) {
+            System.out.println("\nServer failed to login member:\n" + ex);
+            return null;
+        }
     }
 
     @Override
