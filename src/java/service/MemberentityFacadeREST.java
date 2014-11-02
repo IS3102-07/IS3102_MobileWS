@@ -6,13 +6,16 @@
 package service;
 
 import Entity.Itementity;
+import Entity.Lineitementity;
 import Entity.Loyaltytierentity;
 import Entity.MemberHelper;
 import Entity.Memberentity;
+import Entity.Qrphonesyncentity;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -72,7 +75,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
             em.detach(m);
             m.setCountryId(null);
             m.setLoyaltytierId(null);
-            m.setShoppinglistId(null);
+            m.setLineitementityList(null);
             m.setWishlistId(null);
         }
         List<Memberentity> list2 = new ArrayList();
@@ -100,7 +103,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
                 m.setAccountlockstatus(null);
                 m.setAddress(null);
                 m.setPasswordhash(null);
-                m.setShoppinglistId(null);
+                m.setLineitementityList(null);
                 m.setWishlistId(null);
                 m.setPasswordhash(null);
                 m.setPasswordsalt(null);
@@ -164,6 +167,78 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
         } catch (Exception ex) {
             System.out.println("\nServer failed to login member:\n" + ex);
             return null;
+        }
+    }
+
+    @GET
+    @Path("uploadShoppingList")
+    @Produces({"application/json"})
+    public String uploadShoppingList(@QueryParam("email") String email, @QueryParam("shoppingList") String shoppingList) {
+        System.out.println("webservice: uploadShoppingList called");
+        System.out.println(shoppingList);
+        try {
+            Query q = em.createQuery("select m from Memberentity m where m.email=:email and m.isdeleted=false");
+            q.setParameter("email", email);
+            Memberentity m = (Memberentity) q.getSingleResult();
+            List<Lineitementity> list = m.getLineitementityList();
+            if (!list.isEmpty()) {
+                for (Lineitementity lineItem : list) {
+                    em.refresh(lineItem);
+                    em.flush();
+                    em.remove(lineItem);
+                }
+            }
+            m.setLineitementityList(new ArrayList<Lineitementity>());
+            em.flush();
+
+            Scanner sc = new Scanner(shoppingList);
+            sc.useDelimiter(",");
+            while (sc.hasNext()) {
+                String SKU = sc.next();
+                Integer quantity = Integer.parseInt(sc.next());
+                if (quantity != 0) {
+                    q = em.createQuery("select i from Itementity i where i.sku=:SKU and i.isdeleted=false");
+                    q.setParameter("SKU", SKU);
+                    Itementity item = (Itementity) q.getSingleResult();
+
+                    Lineitementity lineItem = new Lineitementity();
+
+                    lineItem.setItemId(item);
+                    lineItem.setQuantity(quantity);
+                    System.out.println("Item: " + item.getSku());
+                    System.out.println("Quantity: " + quantity);
+                    m.getLineitementityList().add(lineItem);
+                }
+            }
+            return "success";
+            //return s;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "fail";
+        }
+    }
+
+    @GET
+    @Path("syncWithPOS")
+    @Produces({"application/json"})
+    public String tieMemberToSyncRequest(@QueryParam("email") String email, @QueryParam("qrCode") String qrCode) {
+        System.out.println("tieMemberToSyncRequest() called");
+        try {
+            Query q = em.createQuery("SELECT p from Qrphonesyncentity p where p.qrcode=:qrCode");
+            q.setParameter("qrCode", qrCode);
+            Qrphonesyncentity phoneSyncEntity = (Qrphonesyncentity) q.getSingleResult();
+            if (phoneSyncEntity == null) {
+                return "fail";
+            } else {
+                phoneSyncEntity.setMemberemail(email);
+                em.merge(phoneSyncEntity);
+                em.flush();
+                return "success";
+            }
+        } catch (Exception ex) {
+            System.out.println("tieMemberToSyncRequest(): Error");
+            ex.printStackTrace();
+            return "fail";
         }
     }
 

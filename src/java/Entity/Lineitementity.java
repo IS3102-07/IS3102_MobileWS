@@ -8,8 +8,11 @@ package Entity;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -36,15 +39,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Lineitementity.findByPacktype", query = "SELECT l FROM Lineitementity l WHERE l.packtype = :packtype"),
     @NamedQuery(name = "Lineitementity.findByQuantity", query = "SELECT l FROM Lineitementity l WHERE l.quantity = :quantity")})
 public class Lineitementity implements Serializable {
-    @JoinTable(name = "shoppinglistentity_lineitementity", joinColumns = {
-        @JoinColumn(name = "items_ID", referencedColumnName = "ID")}, inverseJoinColumns = {
-        @JoinColumn(name = "ShoppingListEntity_ID", referencedColumnName = "ID")})
-    @ManyToMany
-    private List<Shoppinglistentity> shoppinglistentityList;
+    @ManyToMany(mappedBy = "lineitementityList")
+    private List<Memberentity> memberentityList;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private Long id;
     @Size(max = 255)
@@ -120,13 +121,14 @@ public class Lineitementity implements Serializable {
         return "Entity.Lineitementity[ id=" + id + " ]";
     }
 
+
     @XmlTransient
-    public List<Shoppinglistentity> getShoppinglistentityList() {
-        return shoppinglistentityList;
+    public List<Memberentity> getMemberentityList() {
+        return memberentityList;
     }
 
-    public void setShoppinglistentityList(List<Shoppinglistentity> shoppinglistentityList) {
-        this.shoppinglistentityList = shoppinglistentityList;
+    public void setMemberentityList(List<Memberentity> memberentityList) {
+        this.memberentityList = memberentityList;
     }
-    
+
 }

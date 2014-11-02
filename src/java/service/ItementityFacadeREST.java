@@ -32,34 +32,34 @@ import javax.ws.rs.QueryParam;
 @Stateless
 @Path("entity.itementity")
 public class ItementityFacadeREST extends AbstractFacade<Itementity> {
-    
+
     @PersistenceContext(unitName = "WebService_MobilePU")
     private EntityManager em;
-    
+
     public ItementityFacadeREST() {
         super(Itementity.class);
     }
-    
+
     @POST
     @Override
     @Consumes({"application/xml", "application/json"})
     public void create(Itementity entity) {
         super.create(entity);
     }
-    
+
     @PUT
     @Path("{id}")
     @Consumes({"application/xml", "application/json"})
     public void edit(@PathParam("id") Long id, Itementity entity) {
         super.edit(entity);
     }
-    
+
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
         super.remove(super.find(id));
     }
-    
+
     @GET
     @Path("{id}")
     @Produces({"application/xml", "application/json"})
@@ -103,7 +103,6 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
                 item.setItemCountryentityList(null);
                 item.setLineitementityList(null);
                 item.setRetailproductentity(null);
-                item.setShoppinglistentityList(null);
                 item.setWarehousesId(null);
                 item.setWishlistentityList(null);
                 itemList.add(item);
@@ -111,18 +110,18 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
         }
         return itemList;
     }
-    
-        @GET
+
+    @GET
     @Path("itemname")
     @Produces({"application/json"})
     public String getItemNameBySKU(@QueryParam("SKU") String SKU) {
         Query q = em.createQuery("Select i from Itementity i where i.sku=:SKU and i.isdeleted=false");
         q.setParameter("SKU", SKU);
-        Itementity item = (Itementity)q.getSingleResult();
-        
+        Itementity item = (Itementity) q.getSingleResult();
+
         return item.getName();
     }
-    
+
     @GET
     @Path("furniture")
     @Produces({"application/json"})
@@ -149,7 +148,7 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
         }
         return furnitureList;
     }
-    
+
 //    @GET
 //    @Path("itemInfo")
 //    @Produces({"application/json"})
@@ -174,5 +173,5 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

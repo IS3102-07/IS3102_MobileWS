@@ -7,12 +7,16 @@ package Entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -22,6 +26,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -47,6 +52,24 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Memberentity.findBySecurityquestion", query = "SELECT m FROM Memberentity m WHERE m.securityquestion = :securityquestion"),
     @NamedQuery(name = "Memberentity.findByUnlockcode", query = "SELECT m FROM Memberentity m WHERE m.unlockcode = :unlockcode")})
 public class Memberentity implements Serializable {
+    @Column(name = "AGE")
+    private Integer age;
+    @Column(name = "INCOME")
+    private Integer income;
+    @Column(name = "JOINDATE")
+    @Temporal(TemporalType.DATE)
+    private Date joindate;
+    @Lob
+    @Size(max = 2147483647)
+    @Column(name = "OCCUPATION")
+    private String occupation;
+    @Column(name = "SERVICELEVELAGREEMENT")
+    private Boolean servicelevelagreement;
+    @JoinTable(name = "memberentity_lineitementity", joinColumns = {
+        @JoinColumn(name = "MemberEntity_ID", referencedColumnName = "ID")}, inverseJoinColumns = {
+        @JoinColumn(name = "shoppingList_ID", referencedColumnName = "ID")})
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Lineitementity> lineitementityList;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -123,9 +146,7 @@ public class Memberentity implements Serializable {
     @JoinColumn(name = "LOYALTYTIER_ID", referencedColumnName = "ID")
     @ManyToOne
     private Loyaltytierentity loyaltytierId;
-    @JoinColumn(name = "SHOPPINGLIST_ID", referencedColumnName = "ID")
-    @ManyToOne
-    private Shoppinglistentity shoppinglistId;
+
     @JoinColumn(name = "WISHLIST_ID", referencedColumnName = "ID")
     @ManyToOne
     private Wishlistentity wishlistId;
@@ -320,15 +341,6 @@ public class Memberentity implements Serializable {
     public void setLoyaltytierId(Loyaltytierentity loyaltytierId) {
         this.loyaltytierId = loyaltytierId;
     }
-
-    public Shoppinglistentity getShoppinglistId() {
-        return shoppinglistId;
-    }
-
-    public void setShoppinglistId(Shoppinglistentity shoppinglistId) {
-        this.shoppinglistId = shoppinglistId;
-    }
-
     public Wishlistentity getWishlistId() {
         return wishlistId;
     }
@@ -360,6 +372,55 @@ public class Memberentity implements Serializable {
     @Override
     public String toString() {
         return "Entity.Memberentity[ id=" + id + " ]";
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public Integer getIncome() {
+        return income;
+    }
+
+    public void setIncome(Integer income) {
+        this.income = income;
+    }
+
+    public Date getJoindate() {
+        return joindate;
+    }
+
+    public void setJoindate(Date joindate) {
+        this.joindate = joindate;
+    }
+
+    public String getOccupation() {
+        return occupation;
+    }
+
+    public void setOccupation(String occupation) {
+        this.occupation = occupation;
+    }
+
+    public Boolean getServicelevelagreement() {
+        return servicelevelagreement;
+    }
+
+    public void setServicelevelagreement(Boolean servicelevelagreement) {
+        this.servicelevelagreement = servicelevelagreement;
+    }
+
+    @XmlTransient
+    public List<Lineitementity> getLineitementityList() {
+        return lineitementityList;
+    }
+
+    public void setLineitementityList(List<Lineitementity> lineitementityList) {
+        this.lineitementityList = lineitementityList;
     }
     
 }

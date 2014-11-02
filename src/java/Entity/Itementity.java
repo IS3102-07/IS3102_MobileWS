@@ -85,11 +85,6 @@ public class Itementity implements Serializable {
     private Integer width;
     @ManyToMany(mappedBy = "itementityList")
     private List<Wishlistentity> wishlistentityList;
-    @JoinTable(name = "shoppinglistentity_itementity", joinColumns = {
-        @JoinColumn(name = "items_ID", referencedColumnName = "ID")}, inverseJoinColumns = {
-        @JoinColumn(name = "ShoppingListEntity_ID", referencedColumnName = "ID")})
-    @ManyToMany
-    private List<Shoppinglistentity> shoppinglistentityList;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "itementity")
     private Retailproductentity retailproductentity;
     @JoinColumn(name = "WAREHOUSES_ID", referencedColumnName = "ID")
@@ -212,15 +207,6 @@ public class Itementity implements Serializable {
 
     public void setWishlistentityList(List<Wishlistentity> wishlistentityList) {
         this.wishlistentityList = wishlistentityList;
-    }
-
-    @XmlTransient
-    public List<Shoppinglistentity> getShoppinglistentityList() {
-        return shoppinglistentityList;
-    }
-
-    public void setShoppinglistentityList(List<Shoppinglistentity> shoppinglistentityList) {
-        this.shoppinglistentityList = shoppinglistentityList;
     }
 
     public Retailproductentity getRetailproductentity() {
