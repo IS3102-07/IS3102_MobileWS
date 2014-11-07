@@ -131,10 +131,13 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
     @Path("furniture")
     @Produces({"application/json"})
     public List<FurnitureHelper> listAllFurnitureByCountry(@QueryParam("country") String country) {
-        Query q = em.createQuery("Select c from ItemCountryentity c,Countryentity co where c.countryId.id=co.id and c.countryId.name=:country and c.isdeleted=false");
+        Query q = em.createQuery("Select c from ItemCountryentity c,Countryentity co where c.countryId.id=co.id and co.name=:country and c.isdeleted=false");
+        
         q.setParameter("country", country);
         List<ItemCountryentity> list = q.getResultList();
         List<FurnitureHelper> furnitureList = new ArrayList();
+        System.out.println("Country is " + country);
+        System.out.println("Number of furniture retreived: " + list.size());
         for (ItemCountryentity itemCountry : list) {
             Itementity item = itemCountry.getItemId();
             if (!item.getIsdeleted() && item.getType().equals("Furniture")) {
