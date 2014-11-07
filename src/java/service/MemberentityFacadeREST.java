@@ -151,8 +151,9 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
             Loyaltytierentity loyalty = m.getLoyaltytierId();
             List<Itementity> wishList = m.getWishlistId().getItementityList();
             ArrayList<String> arrWishList = new ArrayList<>();
+            
             for (Itementity i : wishList) {
-                arrWishList.add(i.getSku() + ": " + i.getName());
+                arrWishList.add(i.getSku() + ": " + i.getName() + " x 1");
             }
             MemberHelper helper = new MemberHelper();
             helper.setEmail(email);
