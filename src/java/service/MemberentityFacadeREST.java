@@ -167,7 +167,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
                 String hello = df.format(test);
                 helper.setAmountSpent(hello);
             } else {
-                helper.setAmountSpent(test + "");
+                helper.setAmountSpent("0.00");
             }
             helper.setWishList(arrWishList);
             System.out.println("Login credentials provided were incorrect, password wrong.");
