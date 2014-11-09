@@ -162,9 +162,13 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
             helper.setTier(loyalty.getTier());
             helper.setPointsEarned(m.getLoyaltypoints());
             double test = m.getCummulativespending();
-            DecimalFormat df = new DecimalFormat("#.00");
-            helper.setAmountSpent(df.format(test));
-            System.out.println(df.format(test));
+            if (test != 0) {
+                DecimalFormat df = new DecimalFormat("#.00");
+                String hello = df.format(test);
+                helper.setAmountSpent(hello);
+            } else {
+                helper.setAmountSpent(test + "");
+            }
             helper.setWishList(arrWishList);
             System.out.println("Login credentials provided were incorrect, password wrong.");
             return helper;
