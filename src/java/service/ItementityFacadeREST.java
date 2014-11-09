@@ -122,6 +122,7 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
 
             return item.getName();
         } catch (Exception ex) {
+            ex.printStackTrace();
             return "";
         }
 
