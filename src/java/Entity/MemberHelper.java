@@ -9,7 +9,7 @@ public class MemberHelper {
     private String tier;
     private Integer pointsEarned;
     private ArrayList<String> wishList;
-    private Double amountSpent;
+    private String amountSpent;
 
     public String getName() {
         return name;
@@ -51,11 +51,11 @@ public class MemberHelper {
         this.wishList = wishList;
     }
 
-    public Double getAmountSpent() {
+    public String getAmountSpent() {
         return amountSpent;
     }
 
-    public void setAmountSpent(Double amountSpent) {
+    public void setAmountSpent(String amountSpent) {
         this.amountSpent = amountSpent;
     }
     

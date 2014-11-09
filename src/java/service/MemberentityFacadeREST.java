@@ -13,6 +13,7 @@ import Entity.Memberentity;
 import Entity.Qrphonesyncentity;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -151,7 +152,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
             Loyaltytierentity loyalty = m.getLoyaltytierId();
             List<Itementity> wishList = m.getWishlistId().getItementityList();
             ArrayList<String> arrWishList = new ArrayList<>();
-            
+
             for (Itementity i : wishList) {
                 arrWishList.add(i.getSku() + ": " + i.getName() + " x 1");
             }
@@ -160,7 +161,10 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
             helper.setName(m.getName());
             helper.setTier(loyalty.getTier());
             helper.setPointsEarned(m.getLoyaltypoints());
-            helper.setAmountSpent(m.getCummulativespending());
+            double test = m.getCummulativespending();
+            DecimalFormat df = new DecimalFormat("#.00");
+            helper.setAmountSpent(df.format(test));
+            System.out.println(df.format(test));
             helper.setWishList(arrWishList);
             System.out.println("Login credentials provided were incorrect, password wrong.");
             return helper;
