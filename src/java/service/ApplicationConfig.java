@@ -30,6 +30,7 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(service.CountryentityFacadeREST.class);
+        resources.add(service.ECommerceFacadeREST.class);
         resources.add(service.FurnitureentityFacadeREST.class);
         resources.add(service.ItementityFacadeREST.class);
         resources.add(service.LineitementityFacadeREST.class);
