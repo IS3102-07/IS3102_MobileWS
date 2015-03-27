@@ -1,30 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package service;
 
 import Entity.Countryentity;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.persistence.*;
+import javax.ws.rs.*;
 
-/**
- *
- * @author Jason
- */
 @Stateless
 @Path("entity.countryentity")
 public class CountryentityFacadeREST extends AbstractFacade<Countryentity> {
@@ -101,7 +84,45 @@ public class CountryentityFacadeREST extends AbstractFacade<Countryentity> {
         }
         return countryList;
     }
+//###
+    @GET
+    @Path("getQuantity")
+    @Produces({"application/json"})
+    public String getItemQuantityOfCountry(@QueryParam("countryID") Long countryID, @QueryParam("SKU") String SKU) {
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?zeroDateTimeBehavior=convertToNull&user=root&password=12345");
+            String stmt = "Select sum(li.QUANTITY) as sum from country_ecommerce c, warehouseentity w, storagebinentity sb, storagebinentity_lineitementity sbli, lineitementity li, itementity i where li.ITEM_ID=i.ID and sbli.lineItems_ID=li.ID and sb.ID=sbli.StorageBinEntity_ID and w.id=sb.WAREHOUSE_ID and c.warehouseentity_id=w.id and countryentity_id = ? and i.SKU= ?";//25
+            PreparedStatement ps = conn.prepareStatement(stmt);
+            ps.setLong(1, countryID);
+            ps.setString(2, SKU);
+            ResultSet rs = ps.executeQuery();
+            String qty = "";
+            while (rs.next()) {
+                qty = rs.getString("sum");
+            }
+            if (qty == null) {
+                return "0";
+            }
+            return qty;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "0";
+        }
+    }
 
+//    @GET
+//    @Path("")
+//    @Produces({"application/json"})
+//    public int setECWarehouse(Long countryID, Long warehouseID) {
+//        try {
+//            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?zeroDateTimeBehavior=convertToNull&user=root&password=12345");
+//            Statement stmt = conn.createStatement();
+//            stmt.executeQuery("");
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+//    }
     @Override
     protected EntityManager getEntityManager() {
         return em;
