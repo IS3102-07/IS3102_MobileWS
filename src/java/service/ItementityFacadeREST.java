@@ -6,7 +6,6 @@
 package service;
 
 import Entity.FurnitureHelper;
-import Entity.Furnitureentity;
 import Entity.ItemCountryentity;
 import Entity.Itementity;
 import java.util.ArrayList;
@@ -119,13 +118,26 @@ public class ItementityFacadeREST extends AbstractFacade<Itementity> {
             Query q = em.createQuery("Select i from Itementity i where i.sku=:SKU and i.isdeleted=false");
             q.setParameter("SKU", SKU);
             Itementity item = (Itementity) q.getSingleResult();
-
             return item.getName();
         } catch (Exception ex) {
             ex.printStackTrace();
             return "";
         }
-
+    }
+    
+    @GET
+    @Path("item")
+    @Produces({"application/json"})
+    public ItemCountryentity getItemBySKU(@QueryParam("SKU") String SKU) {
+        try {
+            Query q = em.createQuery("Select i from ItemCountryentity i where i.sku=:SKU and i.isdeleted=false");
+            q.setParameter("SKU", SKU);
+            ItemCountryentity item = (ItemCountryentity) q.getSingleResult();
+            return item;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @GET
